@@ -1,0 +1,12 @@
+[test]
+# Coverage configuration
+coverage = true
+coverageDir = "coverage"
+coverageReporter = ["text", "lcov"]
+
+# Coverage thresholds
+coverageThreshold = { line = 80, function = 80, branch = 70 }
+
+# Test file patterns
+root = "."
+preload = ["./tests/setup.ts"]
