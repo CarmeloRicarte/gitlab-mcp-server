@@ -36,13 +36,69 @@ For self-hosted GitLab with self-signed certificates:
 export NODE_TLS_REJECT_UNAUTHORIZED=0
 ```
 
-## Usage with Claude Code
+## Environment Variables Setup
 
-There are two ways to configure environment variables:
+There are two approaches to configure credentials:
 
 ### Option A: Variables in MCP Config (Simplest)
 
-Pass all variables directly in the MCP configuration. This is the easiest setup for new machines:
+Pass all variables directly in the MCP configuration. Easiest for quick setup on new machines.
+
+> ⚠️ **Note**: Token is stored in the config file (local, private). Acceptable for personal use.
+
+### Option B: System Environment Variables (More Secure)
+
+Keep sensitive tokens at system/user level, only pass non-sensitive values in MCP config.
+
+<details>
+<summary><strong>Windows (PowerShell)</strong></summary>
+
+```powershell
+# Set permanently for current user
+[Environment]::SetEnvironmentVariable("GITLAB_TOKEN", "glpat-your-token", "User")
+[Environment]::SetEnvironmentVariable("GITLAB_HOST", "https://your-gitlab.com", "User")
+
+# Verify
+[Environment]::GetEnvironmentVariable("GITLAB_TOKEN", "User")
+```
+
+> Restart your terminal/IDE after setting variables.
+
+</details>
+
+<details>
+<summary><strong>macOS / Linux</strong></summary>
+
+```bash
+# Add to ~/.zshrc (macOS) or ~/.bashrc (Linux)
+echo 'export GITLAB_TOKEN="glpat-your-token"' >> ~/.zshrc
+echo 'export GITLAB_HOST="https://your-gitlab.com"' >> ~/.zshrc
+
+# Reload
+source ~/.zshrc
+
+# Verify
+echo $GITLAB_TOKEN
+```
+
+</details>
+
+---
+
+## IDE / Tool Configuration
+
+> ⚠️ **Important**: `${VARIABLE}` syntax does NOT work in most MCP configs - values are treated as literal strings, not resolved. Use Option A (hardcoded values) or Option B (system variables that the server reads from `process.env`).
+
+Replace paths according to your OS:
+- **Windows**: `C:/path/to/gitlab-mcp-server/index.ts`
+- **macOS/Linux**: `/Users/yourname/path/to/gitlab-mcp-server/index.ts`
+
+---
+
+### Claude Code CLI
+
+<details>
+<summary><strong>Option A: All variables in config</strong></summary>
 
 ```bash
 claude mcp add-json GitLab '{
@@ -51,59 +107,389 @@ claude mcp add-json GitLab '{
   "args": ["run", "/path/to/gitlab-mcp-server/index.ts"],
   "env": {
     "GITLAB_HOST": "https://your-gitlab.com",
-    "GITLAB_TOKEN": "glpat-your-token-here",
+    "GITLAB_TOKEN": "glpat-your-token",
     "NODE_TLS_REJECT_UNAUTHORIZED": "0"
   }
 }'
 ```
 
-> ⚠️ **Note**: The token is stored in `~/.claude.json` (local, private file). This is acceptable for personal use.
+</details>
 
-### Option B: System Variables + MCP Config (More Secure)
+<details>
+<summary><strong>Option B: Token from system env</strong></summary>
 
-Keep sensitive tokens in system environment variables and only pass non-sensitive values in the MCP config:
-
-1. Set the token at system/user level:
-
-   **Windows (PowerShell):**
-   ```powershell
-   [Environment]::SetEnvironmentVariable("GITLAB_TOKEN", "glpat-xxx", "User")
-   ```
-
-   **macOS/Linux:**
-   ```bash
-   echo 'export GITLAB_TOKEN="glpat-xxx"' >> ~/.zshrc  # or ~/.bashrc
-   source ~/.zshrc
-   ```
-
-2. Add the MCP with only non-sensitive variables:
-
-   ```bash
-   claude mcp add-json GitLab '{
-     "type": "stdio",
-     "command": "bun",
-     "args": ["run", "/path/to/gitlab-mcp-server/index.ts"],
-     "env": {
-       "GITLAB_HOST": "https://your-gitlab.com",
-       "NODE_TLS_REJECT_UNAUTHORIZED": "0"
-     }
-   }'
-   ```
-
-> ⚠️ **Important**: `${VARIABLE}` syntax does NOT work in Claude Code MCP config - it will be treated as a literal string, not resolved.
-
-### Verify Installation
-
-Restart Claude Code and verify the connection:
+Set `GITLAB_TOKEN` as system variable (see above), then:
 
 ```bash
-claude mcp list
+claude mcp add-json GitLab '{
+  "type": "stdio",
+  "command": "bun",
+  "args": ["run", "/path/to/gitlab-mcp-server/index.ts"],
+  "env": {
+    "GITLAB_HOST": "https://your-gitlab.com",
+    "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+  }
+}'
 ```
 
-You should see:
+</details>
+
+**Verify:**
+```bash
+claude mcp list
+# Expected: GitLab: bun run ... - ✓ Connected
 ```
-GitLab: bun run /path/to/gitlab-mcp-server/index.ts - ✓ Connected
+
+---
+
+### VS Code (with MCP extension)
+
+Edit `~/.vscode/mcp.json` or `.vscode/mcp.json` in your project:
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+```json
+{
+  "servers": {
+    "GitLab": {
+      "type": "stdio",
+      "command": "bun",
+      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
 ```
+
+</details>
+
+<details>
+<summary><strong>macOS / Linux</strong></summary>
+
+```json
+{
+  "servers": {
+    "GitLab": {
+      "type": "stdio",
+      "command": "bun",
+      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+### Cursor
+
+Edit `~/.cursor/mcp.json`:
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "command": "bun",
+      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "command": "bun",
+      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+### Zed
+
+Edit `~/.config/zed/settings.json` (macOS/Linux) or `%APPDATA%\Zed\settings.json` (Windows):
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+```json
+{
+  "context_servers": {
+    "GitLab": {
+      "command": {
+        "path": "bun",
+        "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+        "env": {
+          "GITLAB_HOST": "https://your-gitlab.com",
+          "GITLAB_TOKEN": "glpat-your-token",
+          "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>macOS / Linux</strong></summary>
+
+```json
+{
+  "context_servers": {
+    "GitLab": {
+      "command": {
+        "path": "bun",
+        "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
+        "env": {
+          "GITLAB_HOST": "https://your-gitlab.com",
+          "GITLAB_TOKEN": "glpat-your-token",
+          "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+### OpenCode
+
+Edit `~/.config/opencode/config.json`:
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "GitLab": {
+        "type": "stdio",
+        "command": "bun",
+        "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+        "env": {
+          "GITLAB_HOST": "https://your-gitlab.com",
+          "GITLAB_TOKEN": "glpat-your-token",
+          "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>macOS / Linux</strong></summary>
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "GitLab": {
+        "type": "stdio",
+        "command": "bun",
+        "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
+        "env": {
+          "GITLAB_HOST": "https://your-gitlab.com",
+          "GITLAB_TOKEN": "glpat-your-token",
+          "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+### Codex (OpenAI CLI)
+
+Edit `~/.codex/config.json`:
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "command": "bun",
+      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>macOS / Linux</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "command": "bun",
+      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+### Windsurf
+
+Edit `~/.codeium/windsurf/mcp_config.json`:
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "command": "bun",
+      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "command": "bun",
+      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+### Claude Desktop
+
+Edit the Claude Desktop config file:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "command": "bun",
+      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "command": "bun",
+      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
+      "env": {
+        "GITLAB_HOST": "https://your-gitlab.com",
+        "GITLAB_TOKEN": "glpat-your-token",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+</details>
 
 ## Available Tools
 
