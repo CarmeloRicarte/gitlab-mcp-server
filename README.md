@@ -1,6 +1,9 @@
 # GitLab MCP Server
 
-A Model Context Protocol (MCP) server for GitLab integration with Claude Code.
+[![npm version](https://img.shields.io/npm/v/@carmeloricarte/gitlab-mcp-server.svg)](https://www.npmjs.com/package/@carmeloricarte/gitlab-mcp-server)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A Model Context Protocol (MCP) server for GitLab integration with Claude Code and AI assistants.
 
 ## Features
 
@@ -13,14 +16,22 @@ A Model Context Protocol (MCP) server for GitLab integration with Claude Code.
 
 ## Requirements
 
-- [Bun](https://bun.sh/) >= 1.0
+- [Bun](https://bun.sh/) >= 1.0 **or** [Node.js](https://nodejs.org/) >= 18
 - GitLab Personal Access Token with `api` scope
 
 ## Installation
 
+The server is published on npm and can be run directly:
+
 ```bash
-bun install
+# Using Bun (recommended)
+bunx @carmeloricarte/gitlab-mcp-server
+
+# Using Node.js
+npx @carmeloricarte/gitlab-mcp-server
 ```
+
+No need to clone the repository or install dependencies manually.
 
 ## Configuration
 
@@ -87,11 +98,9 @@ echo $GITLAB_TOKEN
 
 ## IDE / Tool Configuration
 
-> ⚠️ **Important**: `${VARIABLE}` syntax does NOT work in most MCP configs - values are treated as literal strings, not resolved. Use Option A (hardcoded values) or Option B (system variables that the server reads from `process.env`).
+> 💡 **Tip**: Use `bunx` if you have Bun installed, or `npx` for Node.js. Both work identically.
 
-Replace paths according to your OS:
-- **Windows**: `C:/path/to/gitlab-mcp-server/index.ts`
-- **macOS/Linux**: `/Users/yourname/path/to/gitlab-mcp-server/index.ts`
+> ⚠️ **Important**: `${VARIABLE}` syntax does NOT work in most MCP configs - values are treated as literal strings, not resolved. Use Option A (hardcoded values) or Option B (system variables that the server reads from `process.env`).
 
 ---
 
@@ -103,8 +112,8 @@ Replace paths according to your OS:
 ```bash
 claude mcp add-json GitLab '{
   "type": "stdio",
-  "command": "bun",
-  "args": ["run", "/path/to/gitlab-mcp-server/index.ts"],
+  "command": "bunx",
+  "args": ["@carmeloricarte/gitlab-mcp-server"],
   "env": {
     "GITLAB_HOST": "https://your-gitlab.com",
     "GITLAB_TOKEN": "glpat-your-token",
@@ -123,8 +132,8 @@ Set `GITLAB_TOKEN` as system variable (see above), then:
 ```bash
 claude mcp add-json GitLab '{
   "type": "stdio",
-  "command": "bun",
-  "args": ["run", "/path/to/gitlab-mcp-server/index.ts"],
+  "command": "bunx",
+  "args": ["@carmeloricarte/gitlab-mcp-server"],
   "env": {
     "GITLAB_HOST": "https://your-gitlab.com",
     "NODE_TLS_REJECT_UNAUTHORIZED": "0"
@@ -137,7 +146,7 @@ claude mcp add-json GitLab '{
 **Verify:**
 ```bash
 claude mcp list
-# Expected: GitLab: bun run ... - ✓ Connected
+# Expected: GitLab: bunx ... - ✓ Connected
 ```
 
 ---
@@ -146,16 +155,13 @@ claude mcp list
 
 Edit `~/.vscode/mcp.json` or `.vscode/mcp.json` in your project:
 
-<details>
-<summary><strong>Windows</strong></summary>
-
 ```json
 {
   "servers": {
     "GitLab": {
       "type": "stdio",
-      "command": "bun",
-      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "command": "bunx",
+      "args": ["@carmeloricarte/gitlab-mcp-server"],
       "env": {
         "GITLAB_HOST": "https://your-gitlab.com",
         "GITLAB_TOKEN": "glpat-your-token",
@@ -165,30 +171,6 @@ Edit `~/.vscode/mcp.json` or `.vscode/mcp.json` in your project:
   }
 }
 ```
-
-</details>
-
-<details>
-<summary><strong>macOS / Linux</strong></summary>
-
-```json
-{
-  "servers": {
-    "GitLab": {
-      "type": "stdio",
-      "command": "bun",
-      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
-      "env": {
-        "GITLAB_HOST": "https://your-gitlab.com",
-        "GITLAB_TOKEN": "glpat-your-token",
-        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
-      }
-    }
-  }
-}
-```
-
-</details>
 
 ---
 
@@ -196,15 +178,12 @@ Edit `~/.vscode/mcp.json` or `.vscode/mcp.json` in your project:
 
 Edit `~/.cursor/mcp.json`:
 
-<details>
-<summary><strong>Windows</strong></summary>
-
 ```json
 {
   "mcpServers": {
     "GitLab": {
-      "command": "bun",
-      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "command": "bunx",
+      "args": ["@carmeloricarte/gitlab-mcp-server"],
       "env": {
         "GITLAB_HOST": "https://your-gitlab.com",
         "GITLAB_TOKEN": "glpat-your-token",
@@ -214,29 +193,6 @@ Edit `~/.cursor/mcp.json`:
   }
 }
 ```
-
-</details>
-
-<details>
-<summary><strong>macOS</strong></summary>
-
-```json
-{
-  "mcpServers": {
-    "GitLab": {
-      "command": "bun",
-      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
-      "env": {
-        "GITLAB_HOST": "https://your-gitlab.com",
-        "GITLAB_TOKEN": "glpat-your-token",
-        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
-      }
-    }
-  }
-}
-```
-
-</details>
 
 ---
 
@@ -244,16 +200,13 @@ Edit `~/.cursor/mcp.json`:
 
 Edit `~/.config/zed/settings.json` (macOS/Linux) or `%APPDATA%\Zed\settings.json` (Windows):
 
-<details>
-<summary><strong>Windows</strong></summary>
-
 ```json
 {
   "context_servers": {
     "GitLab": {
       "command": {
-        "path": "bun",
-        "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+        "path": "bunx",
+        "args": ["@carmeloricarte/gitlab-mcp-server"],
         "env": {
           "GITLAB_HOST": "https://your-gitlab.com",
           "GITLAB_TOKEN": "glpat-your-token",
@@ -264,31 +217,6 @@ Edit `~/.config/zed/settings.json` (macOS/Linux) or `%APPDATA%\Zed\settings.json
   }
 }
 ```
-
-</details>
-
-<details>
-<summary><strong>macOS / Linux</strong></summary>
-
-```json
-{
-  "context_servers": {
-    "GitLab": {
-      "command": {
-        "path": "bun",
-        "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
-        "env": {
-          "GITLAB_HOST": "https://your-gitlab.com",
-          "GITLAB_TOKEN": "glpat-your-token",
-          "NODE_TLS_REJECT_UNAUTHORIZED": "0"
-        }
-      }
-    }
-  }
-}
-```
-
-</details>
 
 ---
 
@@ -296,17 +224,14 @@ Edit `~/.config/zed/settings.json` (macOS/Linux) or `%APPDATA%\Zed\settings.json
 
 Edit `~/.config/opencode/config.json`:
 
-<details>
-<summary><strong>Windows</strong></summary>
-
 ```json
 {
   "mcp": {
     "servers": {
       "GitLab": {
         "type": "stdio",
-        "command": "bun",
-        "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+        "command": "bunx",
+        "args": ["@carmeloricarte/gitlab-mcp-server"],
         "env": {
           "GITLAB_HOST": "https://your-gitlab.com",
           "GITLAB_TOKEN": "glpat-your-token",
@@ -317,32 +242,6 @@ Edit `~/.config/opencode/config.json`:
   }
 }
 ```
-
-</details>
-
-<details>
-<summary><strong>macOS / Linux</strong></summary>
-
-```json
-{
-  "mcp": {
-    "servers": {
-      "GitLab": {
-        "type": "stdio",
-        "command": "bun",
-        "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
-        "env": {
-          "GITLAB_HOST": "https://your-gitlab.com",
-          "GITLAB_TOKEN": "glpat-your-token",
-          "NODE_TLS_REJECT_UNAUTHORIZED": "0"
-        }
-      }
-    }
-  }
-}
-```
-
-</details>
 
 ---
 
@@ -350,15 +249,12 @@ Edit `~/.config/opencode/config.json`:
 
 Edit `~/.codex/config.json`:
 
-<details>
-<summary><strong>Windows</strong></summary>
-
 ```json
 {
   "mcpServers": {
     "GitLab": {
-      "command": "bun",
-      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "command": "bunx",
+      "args": ["@carmeloricarte/gitlab-mcp-server"],
       "env": {
         "GITLAB_HOST": "https://your-gitlab.com",
         "GITLAB_TOKEN": "glpat-your-token",
@@ -368,29 +264,6 @@ Edit `~/.codex/config.json`:
   }
 }
 ```
-
-</details>
-
-<details>
-<summary><strong>macOS / Linux</strong></summary>
-
-```json
-{
-  "mcpServers": {
-    "GitLab": {
-      "command": "bun",
-      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
-      "env": {
-        "GITLAB_HOST": "https://your-gitlab.com",
-        "GITLAB_TOKEN": "glpat-your-token",
-        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
-      }
-    }
-  }
-}
-```
-
-</details>
 
 ---
 
@@ -398,15 +271,12 @@ Edit `~/.codex/config.json`:
 
 Edit `~/.codeium/windsurf/mcp_config.json`:
 
-<details>
-<summary><strong>Windows</strong></summary>
-
 ```json
 {
   "mcpServers": {
     "GitLab": {
-      "command": "bun",
-      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "command": "bunx",
+      "args": ["@carmeloricarte/gitlab-mcp-server"],
       "env": {
         "GITLAB_HOST": "https://your-gitlab.com",
         "GITLAB_TOKEN": "glpat-your-token",
@@ -416,29 +286,6 @@ Edit `~/.codeium/windsurf/mcp_config.json`:
   }
 }
 ```
-
-</details>
-
-<details>
-<summary><strong>macOS</strong></summary>
-
-```json
-{
-  "mcpServers": {
-    "GitLab": {
-      "command": "bun",
-      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
-      "env": {
-        "GITLAB_HOST": "https://your-gitlab.com",
-        "GITLAB_TOKEN": "glpat-your-token",
-        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
-      }
-    }
-  }
-}
-```
-
-</details>
 
 ---
 
@@ -449,15 +296,12 @@ Edit the Claude Desktop config file:
 - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-<details>
-<summary><strong>Windows</strong></summary>
-
 ```json
 {
   "mcpServers": {
     "GitLab": {
-      "command": "bun",
-      "args": ["run", "C:/path/to/gitlab-mcp-server/index.ts"],
+      "command": "bunx",
+      "args": ["@carmeloricarte/gitlab-mcp-server"],
       "env": {
         "GITLAB_HOST": "https://your-gitlab.com",
         "GITLAB_TOKEN": "glpat-your-token",
@@ -467,29 +311,6 @@ Edit the Claude Desktop config file:
   }
 }
 ```
-
-</details>
-
-<details>
-<summary><strong>macOS</strong></summary>
-
-```json
-{
-  "mcpServers": {
-    "GitLab": {
-      "command": "bun",
-      "args": ["run", "/Users/yourname/path/to/gitlab-mcp-server/index.ts"],
-      "env": {
-        "GITLAB_HOST": "https://your-gitlab.com",
-        "GITLAB_TOKEN": "glpat-your-token",
-        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
-      }
-    }
-  }
-}
-```
-
-</details>
 
 ## Available Tools
 
@@ -518,6 +339,16 @@ Edit the Claude Desktop config file:
 
 ## Development
 
+If you want to contribute or run the server locally for development:
+
+### Clone and Install
+
+```bash
+git clone https://github.com/CarmeloRicarte/gitlab-mcp-server.git
+cd gitlab-mcp-server
+bun install
+```
+
 ### Project Structure
 
 ```
@@ -537,6 +368,8 @@ src/
 │   └── search.ts
 └── types/
     └── gitlab.ts         # TypeScript types
+scripts/
+└── add-shebang.js        # Adds Node shebang to compiled output
 tests/
 ├── setup.ts              # Test utilities & mocks
 ├── client/
@@ -572,6 +405,29 @@ bun test:coverage
 bun run typecheck
 ```
 
+### Build
+
+```bash
+# Build for production (compiles to dist/index.js with Node.js compatibility)
+bun run build
+
+# Add shebang to compiled output (done automatically on publish)
+bun run add-shebang
+```
+
+### Publish
+
+Publishing to npm is automated via `prepublishOnly`:
+
+```bash
+npm version patch  # or minor/major
+npm publish
+```
+
+This automatically:
+1. Compiles TypeScript to JavaScript (`bun run build`)
+2. Adds `#!/usr/bin/env node` shebang (`bun run add-shebang`)
+
 ## Architecture
 
 The server uses dependency injection for the GitLab client, making it easy to mock in tests:
@@ -587,6 +443,21 @@ const mockClient = new GitLabClient({
 });
 const server = createServer(mockClient);
 ```
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues and pull requests.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+Please make sure to:
+- Follow the existing code style
+- Add tests for new features
+- Update documentation as needed
 
 ## License
 
