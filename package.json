@@ -1,10 +1,39 @@
 {
   "name": "gitlab-mcp-server",
   "version": "1.0.0",
-  "description": "GitLab MCP Server for Claude Code integration",
+  "description": "Model Context Protocol (MCP) server for GitLab integration with Claude Code and AI assistants. Provides tools to interact with GitLab API: manage issues, merge requests, pipelines, projects and repositories.",
+  "author": "Carmelo Ricarte Rocamora",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "gitlab",
+    "claude",
+    "claude-code",
+    "ai",
+    "llm",
+    "anthropic",
+    "devops",
+    "git",
+    "merge-requests",
+    "issues",
+    "pipelines",
+    "ci-cd",
+    "api",
+    "integration",
+    "developer-tools"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarmeloRicarte/gitlab-mcp-server.git"
+  },
+  "homepage": "https://github.com/CarmeloRicarte/gitlab-mcp-server#readme",
+  "bugs": {
+    "url": "https://github.com/CarmeloRicarte/gitlab-mcp-server/issues"
+  },
   "module": "index.ts",
   "type": "module",
-  "private": true,
+  "private": false,
   "scripts": {
     "start": "bun run index.ts",
     "dev": "bun run --watch index.ts",
