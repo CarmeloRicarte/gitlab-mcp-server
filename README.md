@@ -102,6 +102,28 @@ echo $GITLAB_TOKEN
 
 > ⚠️ **Important**: `${VARIABLE}` syntax does NOT work in most MCP configs - values are treated as literal strings, not resolved. Use Option A (hardcoded values) or Option B (system variables that the server reads from `process.env`).
 
+### ⚠️ Windows Configuration
+
+On Windows, you must wrap `npx` or `bunx` commands with `cmd /c`. Use this format:
+
+```json
+{
+  "command": "cmd",
+  "args": ["/c", "npx", "-y", "@carmeloricarte/gitlab-mcp-server"]
+}
+```
+
+Or with Bun:
+
+```json
+{
+  "command": "cmd",
+  "args": ["/c", "bunx", "@carmeloricarte/gitlab-mcp-server"]
+}
+```
+
+> **Important:** The package name must always be the **last argument** in the args array.
+
 ---
 
 ### Claude Code CLI
