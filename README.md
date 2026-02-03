@@ -38,7 +38,11 @@ export NODE_TLS_REJECT_UNAUTHORIZED=0
 
 ## Usage with Claude Code
 
-Add the server to Claude Code:
+There are two ways to configure environment variables:
+
+### Option A: Variables in MCP Config (Simplest)
+
+Pass all variables directly in the MCP configuration. This is the easiest setup for new machines:
 
 ```bash
 claude mcp add-json GitLab '{
@@ -47,14 +51,58 @@ claude mcp add-json GitLab '{
   "args": ["run", "/path/to/gitlab-mcp-server/index.ts"],
   "env": {
     "GITLAB_HOST": "https://your-gitlab.com",
-    "GITLAB_TOKEN": "${GITLAB_TOKEN}"
+    "GITLAB_TOKEN": "glpat-your-token-here",
+    "NODE_TLS_REJECT_UNAUTHORIZED": "0"
   }
 }'
 ```
 
-Then restart Claude Code and verify:
+> ⚠️ **Note**: The token is stored in `~/.claude.json` (local, private file). This is acceptable for personal use.
+
+### Option B: System Variables + MCP Config (More Secure)
+
+Keep sensitive tokens in system environment variables and only pass non-sensitive values in the MCP config:
+
+1. Set the token at system/user level:
+
+   **Windows (PowerShell):**
+   ```powershell
+   [Environment]::SetEnvironmentVariable("GITLAB_TOKEN", "glpat-xxx", "User")
+   ```
+
+   **macOS/Linux:**
+   ```bash
+   echo 'export GITLAB_TOKEN="glpat-xxx"' >> ~/.zshrc  # or ~/.bashrc
+   source ~/.zshrc
+   ```
+
+2. Add the MCP with only non-sensitive variables:
+
+   ```bash
+   claude mcp add-json GitLab '{
+     "type": "stdio",
+     "command": "bun",
+     "args": ["run", "/path/to/gitlab-mcp-server/index.ts"],
+     "env": {
+       "GITLAB_HOST": "https://your-gitlab.com",
+       "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+     }
+   }'
+   ```
+
+> ⚠️ **Important**: `${VARIABLE}` syntax does NOT work in Claude Code MCP config - it will be treated as a literal string, not resolved.
+
+### Verify Installation
+
+Restart Claude Code and verify the connection:
+
 ```bash
 claude mcp list
+```
+
+You should see:
+```
+GitLab: bun run /path/to/gitlab-mcp-server/index.ts - ✓ Connected
 ```
 
 ## Available Tools
