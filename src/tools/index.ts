@@ -8,19 +8,19 @@ import { registerFileTools } from "./files.ts";
 import { registerSearchTools } from "./search.ts";
 
 export function registerAllTools(server: McpServer, client: GitLabClient) {
-  registerProjectTools(server, client);
-  registerBranchTools(server, client);
-  registerIssueTools(server, client);
-  registerMergeRequestTools(server, client);
-  registerFileTools(server, client);
-  registerSearchTools(server, client);
+	registerProjectTools(server, client);
+	registerBranchTools(server, client);
+	registerIssueTools(server, client);
+	registerMergeRequestTools(server, client);
+	registerFileTools(server, client);
+	registerSearchTools(server, client);
 }
 
 export {
-  registerProjectTools,
-  registerBranchTools,
-  registerIssueTools,
-  registerMergeRequestTools,
-  registerFileTools,
-  registerSearchTools,
+	registerProjectTools,
+	registerBranchTools,
+	registerIssueTools,
+	registerMergeRequestTools,
+	registerFileTools,
+	registerSearchTools,
 };

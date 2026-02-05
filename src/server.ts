@@ -8,20 +8,20 @@ const SERVER_NAME = "gitlab-ce";
 const SERVER_VERSION = "1.0.0";
 
 export function createServer(client?: GitLabClient) {
-  const server = new McpServer({
-    name: SERVER_NAME,
-    version: SERVER_VERSION,
-  });
+	const server = new McpServer({
+		name: SERVER_NAME,
+		version: SERVER_VERSION,
+	});
 
-  const gitlabClient = client ?? GitLabClient.fromConfig(config);
-  registerAllTools(server, gitlabClient);
+	const gitlabClient = client ?? GitLabClient.fromConfig(config);
+	registerAllTools(server, gitlabClient);
 
-  return server;
+	return server;
 }
 
 export async function startServer() {
-  const server = createServer();
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error("GitLab MCP Server running on stdio");
+	const server = createServer();
+	const transport = new StdioServerTransport();
+	await server.connect(transport);
+	console.error("GitLab MCP Server running on stdio");
 }
