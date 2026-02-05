@@ -7,6 +7,10 @@ coverageReporter = ["text", "lcov"]
 # Coverage thresholds
 coverageThreshold = { line = 80, function = 80, branch = 70 }
 
+# Exclude test files from coverage
+coverageSkipTestFiles = true
+coveragePathIgnorePatterns = ["tests/setup.ts"]
+
 # Test file patterns
 root = "."
 preload = ["./tests/setup.ts"]

@@ -10,9 +10,11 @@ describe("Project Tools", () => {
   beforeEach(() => {
     registeredTools = new Map();
     server = {
-      tool: mock((name: string, _desc: string, _schema: unknown, handler: Function) => {
-        registeredTools.set(name, { handler });
-      }),
+      registerTool: mock(
+        (name: string, _config: unknown, handler: Function) => {
+          registeredTools.set(name, { handler });
+        },
+      ),
     } as unknown as McpServer;
   });
 

@@ -10,9 +10,11 @@ describe("Issue Tools", () => {
   beforeEach(() => {
     registeredTools = new Map();
     server = {
-      tool: mock((name: string, _desc: string, _schema: unknown, handler: Function) => {
-        registeredTools.set(name, { handler });
-      }),
+      registerTool: mock(
+        (name: string, _config: unknown, handler: Function) => {
+          registeredTools.set(name, { handler });
+        },
+      ),
     } as unknown as McpServer;
   });
 
@@ -43,7 +45,7 @@ describe("Issue Tools", () => {
           title: "Bug report",
           description: "Something is broken",
           labels: "bug,urgent",
-        }
+        },
       );
     });
 
@@ -107,7 +109,7 @@ describe("Issue Tools", () => {
       });
 
       expect(getMock).toHaveBeenCalledWith(
-        "/projects/1/issues?state=closed&per_page=10"
+        "/projects/1/issues?state=closed&per_page=10",
       );
     });
 
@@ -125,7 +127,7 @@ describe("Issue Tools", () => {
       });
 
       expect(getMock).toHaveBeenCalledWith(
-        "/projects/1/issues?state=opened&per_page=20&search=login"
+        "/projects/1/issues?state=opened&per_page=20&search=login",
       );
     });
 

@@ -10,9 +10,11 @@ describe("File Tools", () => {
   beforeEach(() => {
     registeredTools = new Map();
     server = {
-      tool: mock((name: string, _desc: string, _schema: unknown, handler: Function) => {
-        registeredTools.set(name, { handler });
-      }),
+      registerTool: mock(
+        (name: string, _config: unknown, handler: Function) => {
+          registeredTools.set(name, { handler });
+        },
+      ),
     } as unknown as McpServer;
   });
 
@@ -37,7 +39,7 @@ describe("File Tools", () => {
       });
 
       expect(getMock).toHaveBeenCalledWith(
-        "/projects/group%2Fproject/repository/files/src%2Findex.ts?ref=main"
+        "/projects/group%2Fproject/repository/files/src%2Findex.ts?ref=main",
       );
     });
 
@@ -73,7 +75,7 @@ describe("File Tools", () => {
       });
 
       expect(getMock).toHaveBeenCalledWith(
-        "/projects/1/repository/files/README.md?ref=main"
+        "/projects/1/repository/files/README.md?ref=main",
       );
     });
   });
@@ -107,7 +109,7 @@ describe("File Tools", () => {
           branch: "main",
           content: "export const x = 1;",
           commit_message: "Add new file",
-        }
+        },
       );
     });
 
@@ -132,7 +134,7 @@ describe("File Tools", () => {
           branch: "main",
           content: "updated content",
           commit_message: "Update file",
-        }
+        },
       );
     });
 

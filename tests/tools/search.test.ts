@@ -10,9 +10,11 @@ describe("Search Tools", () => {
   beforeEach(() => {
     registeredTools = new Map();
     server = {
-      tool: mock((name: string, _desc: string, _schema: unknown, handler: Function) => {
-        registeredTools.set(name, { handler });
-      }),
+      registerTool: mock(
+        (name: string, _config: unknown, handler: Function) => {
+          registeredTools.set(name, { handler });
+        },
+      ),
     } as unknown as McpServer;
   });
 
@@ -37,7 +39,7 @@ describe("Search Tools", () => {
       });
 
       expect(getMock).toHaveBeenCalledWith(
-        "/projects/group%2Fproject/search?scope=blobs&search=function+test&per_page=30"
+        "/projects/group%2Fproject/search?scope=blobs&search=function+test&per_page=30",
       );
     });
 
@@ -88,7 +90,7 @@ describe("Search Tools", () => {
       });
 
       expect(getMock).toHaveBeenCalledWith(
-        "/projects/1/search?scope=blobs&search=test&per_page=20"
+        "/projects/1/search?scope=blobs&search=test&per_page=20",
       );
     });
 

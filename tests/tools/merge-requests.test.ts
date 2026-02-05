@@ -10,9 +10,11 @@ describe("Merge Request Tools", () => {
   beforeEach(() => {
     registeredTools = new Map();
     server = {
-      tool: mock((name: string, _desc: string, _schema: unknown, handler: Function) => {
-        registeredTools.set(name, { handler });
-      }),
+      registerTool: mock(
+        (name: string, _config: unknown, handler: Function) => {
+          registeredTools.set(name, { handler });
+        },
+      ),
     } as unknown as McpServer;
   });
 
@@ -47,7 +49,7 @@ describe("Merge Request Tools", () => {
           title: "Add feature",
           description: "This adds a new feature",
           remove_source_branch: true,
-        }
+        },
       );
     });
 
@@ -114,7 +116,7 @@ describe("Merge Request Tools", () => {
       });
 
       expect(getMock).toHaveBeenCalledWith(
-        "/projects/1/merge_requests?state=merged&per_page=50"
+        "/projects/1/merge_requests?state=merged&per_page=50",
       );
     });
 

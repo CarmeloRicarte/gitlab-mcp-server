@@ -10,9 +10,11 @@ describe("Branch Tools", () => {
   beforeEach(() => {
     registeredTools = new Map();
     server = {
-      tool: mock((name: string, _desc: string, _schema: unknown, handler: Function) => {
-        registeredTools.set(name, { handler });
-      }),
+      registerTool: mock(
+        (name: string, _config: unknown, handler: Function) => {
+          registeredTools.set(name, { handler });
+        },
+      ),
     } as unknown as McpServer;
   });
 
@@ -33,7 +35,7 @@ describe("Branch Tools", () => {
       await tool.handler({ project: "group/project" });
 
       expect(getMock).toHaveBeenCalledWith(
-        "/projects/group%2Fproject/repository/branches?"
+        "/projects/group%2Fproject/repository/branches?",
       );
     });
 
@@ -46,7 +48,7 @@ describe("Branch Tools", () => {
       await tool.handler({ project: "1", search: "feature" });
 
       expect(getMock).toHaveBeenCalledWith(
-        "/projects/1/repository/branches?search=feature"
+        "/projects/1/repository/branches?search=feature",
       );
     });
 
@@ -80,7 +82,7 @@ describe("Branch Tools", () => {
 
     it("should call client.post with branch data", async () => {
       const postMock = mock(() =>
-        Promise.resolve(mockBranch({ name: "new-feature" }))
+        Promise.resolve(mockBranch({ name: "new-feature" })),
       );
       const client = createMockClient({ post: postMock });
       registerBranchTools(server, client);
@@ -94,7 +96,7 @@ describe("Branch Tools", () => {
 
       expect(postMock).toHaveBeenCalledWith(
         "/projects/group%2Fproject/repository/branches",
-        { branch: "new-feature", ref: "main" }
+        { branch: "new-feature", ref: "main" },
       );
     });
 
