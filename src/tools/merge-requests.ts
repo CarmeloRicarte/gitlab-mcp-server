@@ -15,7 +15,7 @@ export function registerMergeRequestTools(
     "create_merge_request",
     {
       description: "Create a merge request in a GitLab project",
-      inputSchema: {
+      inputSchema: z.object({
         project: z.string().describe("Project ID or path"),
         source_branch: z.string().describe("Source branch name"),
         target_branch: z
@@ -29,7 +29,7 @@ export function registerMergeRequestTools(
           .optional()
           .describe("MR description (markdown)"),
         remove_source_branch: z.boolean().optional().default(true),
-      },
+      }),
     },
     async ({
       project,
@@ -67,14 +67,14 @@ export function registerMergeRequestTools(
     "list_merge_requests",
     {
       description: "List merge requests in a GitLab project",
-      inputSchema: {
+      inputSchema: z.object({
         project: z.string().describe("Project ID or path"),
         state: z
           .enum(["opened", "closed", "merged", "all"])
           .optional()
           .default("opened"),
         per_page: z.number().optional().default(20),
-      },
+      }),
     },
     async ({ project, state, per_page }) => {
       const params = new URLSearchParams({

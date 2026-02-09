@@ -9,7 +9,7 @@ export function registerFileTools(server: McpServer, client: GitLabClient) {
     "get_file",
     {
       description: "Get contents of a file from the repository",
-      inputSchema: {
+      inputSchema: z.object({
         project: z.string().describe("Project ID or path"),
         file_path: z.string().describe("Path to the file in the repository"),
         ref: z
@@ -17,7 +17,7 @@ export function registerFileTools(server: McpServer, client: GitLabClient) {
           .optional()
           .default("main")
           .describe("Branch or commit SHA"),
-      },
+      }),
     },
     async ({ project, file_path, ref }) => {
       const encodedPath = encodeURIComponent(file_path);
@@ -39,14 +39,14 @@ export function registerFileTools(server: McpServer, client: GitLabClient) {
     "create_or_update_file",
     {
       description: "Create or update a file in the repository",
-      inputSchema: {
+      inputSchema: z.object({
         project: z.string().describe("Project ID or path"),
         file_path: z.string().describe("Path to the file"),
         branch: z.string().describe("Branch to commit to"),
         content: z.string().describe("File content"),
         commit_message: z.string().describe("Commit message"),
         action: z.enum(["create", "update"]).optional().default("create"),
-      },
+      }),
     },
     async ({ project, file_path, branch, content, commit_message, action }) => {
       const encodedPath = encodeURIComponent(file_path);

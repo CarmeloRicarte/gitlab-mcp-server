@@ -9,13 +9,13 @@ export function registerBranchTools(server: McpServer, client: GitLabClient) {
     "list_branches",
     {
       description: "List branches in a GitLab project",
-      inputSchema: {
+      inputSchema: z.object({
         project: z.string().describe("Project ID or path"),
         search: z
           .string()
           .optional()
           .describe("Search query to filter branches"),
-      },
+      }),
     },
     async ({ project, search }) => {
       const params = new URLSearchParams();
@@ -43,7 +43,7 @@ export function registerBranchTools(server: McpServer, client: GitLabClient) {
     "create_branch",
     {
       description: "Create a new branch in a GitLab project",
-      inputSchema: {
+      inputSchema: z.object({
         project: z.string().describe("Project ID or path"),
         branch: z.string().describe("Name of the new branch"),
         ref: z
@@ -51,7 +51,7 @@ export function registerBranchTools(server: McpServer, client: GitLabClient) {
           .optional()
           .default("main")
           .describe("Source branch or commit SHA"),
-      },
+      }),
     },
     async ({ project, branch, ref }) => {
       const data = await client.post<GitLabBranch>(

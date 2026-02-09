@@ -9,7 +9,7 @@ export function registerIssueTools(server: McpServer, client: GitLabClient) {
     "create_issue",
     {
       description: "Create a new issue in a GitLab project",
-      inputSchema: {
+      inputSchema: z.object({
         project: z.string().describe("Project ID or path"),
         title: z.string().describe("Issue title"),
         description: z
@@ -21,7 +21,7 @@ export function registerIssueTools(server: McpServer, client: GitLabClient) {
           .array(z.number())
           .optional()
           .describe("Array of user IDs to assign"),
-      },
+      }),
     },
     async ({ project, title, description, labels, assignee_ids }) => {
       const body: Record<string, unknown> = { title };
@@ -49,7 +49,7 @@ export function registerIssueTools(server: McpServer, client: GitLabClient) {
     "list_issues",
     {
       description: "List issues in a GitLab project",
-      inputSchema: {
+      inputSchema: z.object({
         project: z.string().describe("Project ID or path"),
         state: z.enum(["opened", "closed", "all"]).optional().default("opened"),
         search: z
@@ -57,7 +57,7 @@ export function registerIssueTools(server: McpServer, client: GitLabClient) {
           .optional()
           .describe("Search in title and description"),
         per_page: z.number().optional().default(20),
-      },
+      }),
     },
     async ({ project, state, search, per_page }) => {
       const params = new URLSearchParams({

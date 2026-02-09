@@ -9,7 +9,7 @@ export function registerProjectTools(server: McpServer, client: GitLabClient) {
     "list_projects",
     {
       description: "List GitLab projects accessible to the user",
-      inputSchema: {
+      inputSchema: z.object({
         search: z
           .string()
           .optional()
@@ -19,7 +19,7 @@ export function registerProjectTools(server: McpServer, client: GitLabClient) {
           .optional()
           .default(20)
           .describe("Number of results per page"),
-      },
+      }),
     },
     async ({ search, per_page }) => {
       const params = new URLSearchParams({ per_page: String(per_page || 20) });
@@ -46,11 +46,11 @@ export function registerProjectTools(server: McpServer, client: GitLabClient) {
     "get_project",
     {
       description: "Get details of a specific GitLab project",
-      inputSchema: {
+      inputSchema: z.object({
         project: z
           .string()
           .describe("Project ID or path (e.g., 'group/project')"),
-      },
+      }),
     },
     async ({ project }) => {
       const data = await client.get<GitLabProject>(
