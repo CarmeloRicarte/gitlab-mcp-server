@@ -12,11 +12,11 @@ export function registerSearchTools(server: McpServer, client: GitLabClient) {
     "search_code",
     {
       description: "Search for code in a GitLab project",
-      inputSchema: z.object({
+      inputSchema: {
         project: z.string().describe("Project ID or path"),
         search: z.string().describe("Search query"),
         per_page: z.number().optional().default(20),
-      }),
+      },
     },
     async ({ project, search, per_page }) => {
       const params = new URLSearchParams({

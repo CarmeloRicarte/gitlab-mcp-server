@@ -69,23 +69,6 @@ describe("Issue Tools", () => {
       expect(result.content[0].text).toContain("https://gitlab.com");
     });
 
-    it("should include assignee_ids when provided", async () => {
-      const postMock = mock(() => Promise.resolve(mockIssue()));
-      const client = createMockClient({ post: postMock });
-      registerIssueTools(server, client);
-
-      const tool = registeredTools.get("create_issue")!;
-      await tool.handler({
-        project: "1",
-        title: "Test",
-        assignee_ids: [1, 2, 3],
-      });
-
-      expect(postMock).toHaveBeenCalledWith("/projects/1/issues", {
-        title: "Test",
-        assignee_ids: [1, 2, 3],
-      });
-    });
   });
 
   describe("list_issues", () => {

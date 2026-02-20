@@ -48,6 +48,45 @@ describe("Project Tools", () => {
       expect(getMock).toHaveBeenCalledWith("/projects?per_page=10&search=test");
     });
 
+    it("should use group endpoint when group is provided", async () => {
+      const getMock = mock(() => Promise.resolve([mockProject()]));
+      const client = createMockClient({ get: getMock });
+      registerProjectTools(server, client);
+
+      const tool = registeredTools.get("list_projects")!;
+      await tool.handler({ group: "my-org", per_page: 20 });
+
+      expect(getMock).toHaveBeenCalledWith(
+        "/groups/my-org/projects?per_page=20",
+      );
+    });
+
+    it("should use group endpoint with search when both are provided", async () => {
+      const getMock = mock(() => Promise.resolve([mockProject()]));
+      const client = createMockClient({ get: getMock });
+      registerProjectTools(server, client);
+
+      const tool = registeredTools.get("list_projects")!;
+      await tool.handler({ group: "my-org", search: "test", per_page: 10 });
+
+      expect(getMock).toHaveBeenCalledWith(
+        "/groups/my-org/projects?per_page=10&search=test",
+      );
+    });
+
+    it("should encode group path with slashes", async () => {
+      const getMock = mock(() => Promise.resolve([mockProject()]));
+      const client = createMockClient({ get: getMock });
+      registerProjectTools(server, client);
+
+      const tool = registeredTools.get("list_projects")!;
+      await tool.handler({ group: "my-org/subgroup", per_page: 20 });
+
+      expect(getMock).toHaveBeenCalledWith(
+        "/groups/my-org%2Fsubgroup/projects?per_page=20",
+      );
+    });
+
     it("should return formatted project list", async () => {
       const projects = [
         mockProject({ id: 1, name: "project-1" }),
