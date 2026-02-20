@@ -87,6 +87,16 @@ export const mockFile = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+export const mockUser = (overrides: Record<string, unknown> = {}) => ({
+  id: 1,
+  username: "testuser",
+  name: "Test User",
+  state: "active",
+  avatar_url: "https://gitlab.com/uploads/-/system/user/avatar/1/avatar.png",
+  web_url: "https://gitlab.com/testuser",
+  ...overrides,
+});
+
 export const mockSearchResult = (overrides: Record<string, unknown> = {}) => ({
   filename: "index.ts",
   path: "src/index.ts",

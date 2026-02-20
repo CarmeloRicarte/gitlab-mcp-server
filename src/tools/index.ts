@@ -1,11 +1,12 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { GitLabClient } from "../client/gitlab-client.ts";
-import { registerProjectTools } from "./projects.ts";
 import { registerBranchTools } from "./branches.ts";
+import { registerFileTools } from "./files.ts";
 import { registerIssueTools } from "./issues.ts";
 import { registerMergeRequestTools } from "./merge-requests.ts";
-import { registerFileTools } from "./files.ts";
+import { registerProjectTools } from "./projects.ts";
 import { registerSearchTools } from "./search.ts";
+import { registerUserTools } from "./users.ts";
 
 export function registerAllTools(server: McpServer, client: GitLabClient) {
 	registerProjectTools(server, client);
@@ -14,6 +15,7 @@ export function registerAllTools(server: McpServer, client: GitLabClient) {
 	registerMergeRequestTools(server, client);
 	registerFileTools(server, client);
 	registerSearchTools(server, client);
+	registerUserTools(server, client);
 }
 
 export {
@@ -23,4 +25,5 @@ export {
 	registerMergeRequestTools,
 	registerFileTools,
 	registerSearchTools,
+	registerUserTools,
 };

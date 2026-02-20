@@ -74,6 +74,32 @@ describe("Merge Request Tools", () => {
       expect(result.content[0].text).toContain("https://gitlab.com");
     });
 
+    it("should pass reviewer_ids to GitLab API", async () => {
+      const postMock = mock(() => Promise.resolve(mockMergeRequest()));
+      const client = createMockClient({ post: postMock });
+      registerMergeRequestTools(server, client);
+
+      const tool = registeredTools.get("create_merge_request")!;
+      await tool.handler({
+        project: "group/project",
+        source_branch: "feature",
+        target_branch: "develop",
+        title: "Add feature",
+        reviewer_ids: [42],
+      });
+
+      expect(postMock).toHaveBeenCalledWith(
+        "/projects/group%2Fproject/merge_requests",
+        {
+          source_branch: "feature",
+          target_branch: "develop",
+          title: "Add feature",
+          remove_source_branch: true,
+          reviewer_ids: [42],
+        },
+      );
+    });
+
     it("should use default values for optional params", async () => {
       const postMock = mock(() => Promise.resolve(mockMergeRequest()));
       const client = createMockClient({ post: postMock });

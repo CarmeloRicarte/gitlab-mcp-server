@@ -39,11 +39,15 @@ export interface GitLabIssue {
 		username: string;
 		name: string;
 	};
-	assignees?: Array<{
-		id: number;
-		username: string;
-		name: string;
-	}>;
+}
+
+export interface GitLabUser {
+	id: number;
+	username: string;
+	name: string;
+	state?: string;
+	avatar_url?: string;
+	web_url?: string;
 }
 
 export interface GitLabMergeRequest {
@@ -60,6 +64,7 @@ export interface GitLabMergeRequest {
 		username: string;
 		name: string;
 	};
+	reviewers?: GitLabUser[];
 	created_at: string;
 	updated_at: string;
 }
@@ -116,6 +121,14 @@ export interface MergeRequestSummary {
 	target_branch: string;
 	web_url: string;
 	author?: string;
+	reviewers?: string[];
+}
+
+export interface UserSummary {
+	id: number;
+	username: string;
+	name: string;
+	state?: string;
 }
 
 export interface SearchResultSummary {
